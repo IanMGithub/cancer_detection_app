@@ -71,9 +71,23 @@ def add_sidebar():
     return input_dict
 
 
+@st.cache_resource
+def load_model():
+    with open("model/model.pkl", "rb") as f:
+        model = pickle.load(f)
+    return model()
+
+
+@st.cache_resource
+def load_scaler():
+    with open("model/scaler.pkl", "rb") as f:
+        scaler = pickle.load(f)
+    return scaler()
+
+
 def add_predictions(input_data):
-    model = pickle.load(open("model/model.pkl", "rb"))
-    scaler = pickle.load(open("model/scaler.pkl", "rb"))
+    model = load_model()
+    scaler = load_scaler()
     input_array = np.array(list(input_data.values())).reshape(1, -1)
 
     input_array_scaled = scaler.transform(input_array)
@@ -180,5 +194,4 @@ def main():
         add_predictions(input_data)
 
 
-if __name__ == '__main__':
-    main()
+main()
